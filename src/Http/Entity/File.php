@@ -2,6 +2,9 @@
 
 namespace Chiven\Http\Entity;
 
+use Chiven\Http\Exception\DirectoryNotFoundException;
+use Chiven\Http\Exception\FileUploadException;
+
 /**
  * Class File
  * @package Chiven\Http\Entity
@@ -123,5 +126,22 @@ class File
         $this->tmp_name = $tmp_name;
     }
 
+    /**
+     * @param string $storage
+     * @return bool
+     * @throws DirectoryNotFoundException
+     * @throws FileUploadException
+     */
+    public function moveTo(string $storage)
+    {
+        if(!is_dir($storage)) {
+            throw new DirectoryNotFoundException($storage);
+        }
 
+        if(move_uploaded_file($this->getTmpName(), trim($storage, '/') . '/' . $this->getName())) {
+            return true;
+        } else {
+            throw new FileUploadException($this->getName());
+        }
+    }
 }
