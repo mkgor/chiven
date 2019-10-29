@@ -2,7 +2,6 @@
 
 require_once 'vendor/autoload.php';
 
-
 $files = [
     'name' => [
         'something1.jpg',
@@ -26,6 +25,7 @@ $files = [
     ],
 ];
 
-$request = new \Chiven\Http\Request($files);
+$request = new \Chiven\Http\Request();
 
-var_dump($request->getFiles());
+$request->fromGlobals();
+var_dump($request->getHeaders());
