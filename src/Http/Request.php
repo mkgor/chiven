@@ -1,15 +1,62 @@
 <?php
 
-
 namespace Chiven\Http;
 
-
 use Chiven\Http\Entity\File;
+use Chiven\Http\Entity\Header;
 
+/**
+ * Class Request
+ * @package Chiven\Http
+ */
 class Request
 {
+    /**
+     * @var Header[]
+     */
     private $headers;
+
+    /**
+     * @var File[]
+     */
     private $files;
+
+    /**
+     * @var string
+     */
+    private $body;
+
+    /**
+     * @return string
+     */
+    public function getBody(): string
+    {
+        return $this->body;
+    }
+
+    /**
+     * @param string $body
+     */
+    public function setBody(string $body): void
+    {
+        $this->body = $body;
+    }
+
+    /**
+     * @return Header[]
+     */
+    public function getHeaders(): array
+    {
+        return $this->headers;
+    }
+
+    /**
+     * @param Header[] $headers
+     */
+    public function setHeaders(array $headers): void
+    {
+        $this->headers = $headers;
+    }
 
     /**
      * @return mixed
@@ -27,14 +74,21 @@ class Request
         $this->files = $files;
     }
 
-    public function __construct(array $files = [])
+    /**
+     * @param array $files
+     */
+    public function initialize(array $files = [])
     {
         $this->setFiles($this->buildFilesArray($files));
     }
 
     public function fromGlobals()
     {
-        $this->setFiles($this->buildFilesArray($_FILES));
+        if(!empty($_FILES)) {
+            $this->setFiles($this->buildFilesArray($_FILES));
+        }
+
+        $this->setHeaders($this->buildHeadersArray(headers_list()));
     }
 
     /**
@@ -84,5 +138,38 @@ class Request
         $file->setTmpName($fileArray['tmp_name']);
 
         return $file;
+    }
+
+    /**
+     * @param array $headers
+     * @return Header[]
+     */
+    private function buildHeadersArray(array $headers)
+    {
+        $headersObjectArray = [];
+
+        foreach($headers as $header) {
+            $headerExploded = explode(':', $header);
+            $headersObjectArray[] = $this->headerObjectBuilder([
+                'name' => $headerExploded[0],
+                'value' => trim($headerExploded[1])
+            ]);
+        }
+
+        return $headersObjectArray;
+    }
+
+    /**
+     * @param array $headerArray
+     * @return Header
+     */
+    private function headerObjectBuilder(array $headerArray)
+    {
+        $header = new Header();
+
+        $header->setName($headerArray['name']);
+        $header->setValue($headerArray['value']);
+
+        return $header;
     }
 }
