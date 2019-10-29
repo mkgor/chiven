@@ -27,6 +27,48 @@ class Request
     private $body;
 
     /**
+     * @var array
+     */
+    private $post;
+
+    /**
+     * @var array
+     */
+    private $get;
+
+    /**
+     * @return array
+     */
+    public function getPost(): array
+    {
+        return $this->post;
+    }
+
+    /**
+     * @param array $post
+     */
+    public function setPost(array $post): void
+    {
+        $this->post = $post;
+    }
+
+    /**
+     * @return array
+     */
+    public function getGet(): array
+    {
+        return $this->get;
+    }
+
+    /**
+     * @param array $get
+     */
+    public function setGet(array $get): void
+    {
+        $this->get = $get;
+    }
+
+    /**
      * @return string
      */
     public function getBody(): string
@@ -82,6 +124,9 @@ class Request
         $this->setFiles($this->buildFilesArray($files));
     }
 
+    /**
+     * Fills up request object from global variables and standard functions
+     */
     public function fromGlobals()
     {
         if(!empty($_FILES)) {
@@ -89,6 +134,9 @@ class Request
         }
 
         $this->setHeaders($this->buildHeadersArray(headers_list()));
+        $this->setBody(http_get_request_body());
+        $this->setPost($_POST);
+        $this->setGet($_GET);
     }
 
     /**
