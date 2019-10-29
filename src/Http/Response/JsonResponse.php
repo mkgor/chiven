@@ -4,7 +4,7 @@
 namespace Chiven\Http\Response;
 
 
-class JsonResponse
+class JsonResponse extends AbstractResponse
 {
 
 }

@@ -4,7 +4,7 @@
 namespace Chiven\Http\Response;
 
 
-class XmlResponse
+class XmlResponse extends AbstractResponse
 {
 
 }
