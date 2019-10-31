@@ -134,7 +134,7 @@ class Request
         }
 
         $this->setHeaders($this->buildHeadersArray(headers_list()));
-        $this->setBody(http_get_request_body());
+        $this->setBody(file_get_contents('php://stdin'));
         $this->setPost($_POST);
         $this->setGet($_GET);
     }
