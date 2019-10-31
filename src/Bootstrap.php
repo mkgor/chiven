@@ -27,6 +27,9 @@ class Bootstrap
     public function setFormat(FormatInterface $format): void
     {
         $this->format = $format;
+
+        /** Setting up error handler, so it should render all errors in specified format */
+        set_error_handler([$format, 'errorHandler']);
     }
 
 }
