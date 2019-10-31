@@ -16,6 +16,11 @@ abstract class AbstractResponse
     private $headers;
 
     /**
+     * @var array|string
+     */
+    private $body;
+
+    /**
      * @return Header[]
      */
     public function getHeaders(): array
@@ -40,6 +45,15 @@ abstract class AbstractResponse
     }
 
     /**
+     * @param $name
+     * @return Header|null
+     */
+    public function getHeaderByName($name): ?Header
+    {
+        return isset($this->headers[$name]) ? $this->headers[$name] : null;
+    }
+
+    /**
      * @param string $name
      */
     public function removeHeader(string $name): void
@@ -47,5 +61,21 @@ abstract class AbstractResponse
         if(isset($this->headers[$name])) {
             unset($this->headers[$name]);
         }
+    }
+
+    /**
+     * @return array|string
+     */
+    public function getBody()
+    {
+        return $this->body;
+    }
+
+    /**
+     * @param array|string $body
+     */
+    public function setBody($body): void
+    {
+        $this->body = $body;
     }
 }
