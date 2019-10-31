@@ -13,35 +13,6 @@ use Chiven\Http\Response\Response;
 class Json implements FormatInterface
 {
     /**
-     * @var array
-     */
-    private $errorsArray;
-
-    /**
-     * @return mixed
-     */
-    public function getErrorsArray()
-    {
-        return $this->errorsArray;
-    }
-
-    /**
-     * @param mixed $errorsArray
-     */
-    public function setErrorsArray($errorsArray): void
-    {
-        $this->errorsArray = $errorsArray;
-    }
-
-    /**
-     * @param array $errorArray
-     */
-    public function addError($errorArray): void
-    {
-        $this->errorsArray[] = $errorArray;
-    }
-
-    /**
      * @param AbstractResponse $response
      * @return false|mixed|string
      */
