@@ -1,25 +1,25 @@
 {
-    "name": "pixaye/chiven",
-    "description": "Simple library which allows you to build RESTful API fast, easy and flexible",
-    "type": "library",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Gor Mkhitaryan",
-            "email": "gor.mhitaryan@list.ru"
-        }
-    ],
-    "minimum-stability": "stable",
-    "require": {
-        "php": "^7.1",
-        "ext-http": "*"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "^7.5"
-    },
-    "autoload": {
-        "psr-4": {
-            "Chiven\\": "src/"
-        }
+  "name": "pixaye/chiven",
+  "description": "Simple library which allows you to build RESTful API fast, easy and flexible",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Gor Mkhitaryan",
+      "email": "gor.mhitaryan@list.ru"
     }
+  ],
+  "minimum-stability": "stable",
+  "require": {
+    "php": "^7.1",
+    "ext-json": "*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^7.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "Chiven\\": "src/"
+    }
+  }
 }
