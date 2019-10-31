@@ -2,30 +2,12 @@
 
 require_once 'vendor/autoload.php';
 
-$files = [
-    'name' => [
-        'something1.jpg',
-        'something2.jpg'
-    ],
-    'type' => [
-        'something1.jpg',
-        'something2.jpg'
-    ],
-    'tmp_name' => [
-        'something1.jpg',
-        'something2.jpg'
-    ],
-    'error' => [
-        'something1.jpg',
-        'something2.jpg'
-    ],
-    'size' => [
-        0,
-        0
-    ],
-];
-
 $request = new \Chiven\Http\Request();
-
 $request->fromGlobals();
-var_dump($request->getHeaders());
+
+$chiven = new \Chiven\Bootstrap();
+$chiven->setFormat(new \Chiven\Format\Json());
+
+//Request handling...
+
+echo $chiven->getFormat()->responseDecorator(new \Chiven\Http\Response\Response());
