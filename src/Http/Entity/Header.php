@@ -19,6 +19,18 @@ class Header
     private $value;
 
     /**
+     * Header constructor.
+     *
+     * @param string $name
+     * @param string $value
+     */
+    public function __construct(string $name = null, string $value = null)
+    {
+        $this->name = $name;
+        $this->value = $value;
+    }
+
+    /**
      * @return string
      */
     public function getName(): string
@@ -50,5 +62,10 @@ class Header
         $this->value = $value;
     }
 
-
+    public function assignHeader(): void
+    {
+        if(!headers_sent()) {
+            header($this->getName() . ': ' . $this->getValue());
+        }
+    }
 }
