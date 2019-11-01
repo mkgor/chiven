@@ -1,11 +1,13 @@
 <?php
 
-
 namespace Chiven;
-
 
 use Chiven\Format\FormatInterface;
 
+/**
+ * Class Bootstrap
+ * @package Chiven
+ */
 class Bootstrap
 {
     /**
@@ -15,6 +17,7 @@ class Bootstrap
 
     /**
      * @return FormatInterface
+     * @codeCoverageIgnore
      */
     public function getFormat(): FormatInterface
     {
@@ -23,6 +26,7 @@ class Bootstrap
 
     /**
      * @param FormatInterface $format
+     * @codeCoverageIgnore
      */
     public function setFormat(FormatInterface $format): void
     {
