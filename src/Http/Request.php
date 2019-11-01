@@ -38,6 +38,7 @@ class Request
 
     /**
      * @return array
+     * @codeCoverageIgnore
      */
     public function getPost(): array
     {
@@ -46,6 +47,7 @@ class Request
 
     /**
      * @param array $post
+     * @codeCoverageIgnore
      */
     public function setPost(array $post): void
     {
@@ -54,6 +56,7 @@ class Request
 
     /**
      * @return array
+     * @codeCoverageIgnore
      */
     public function getGet(): array
     {
@@ -62,6 +65,7 @@ class Request
 
     /**
      * @param array $get
+     * @codeCoverageIgnore
      */
     public function setGet(array $get): void
     {
@@ -70,6 +74,7 @@ class Request
 
     /**
      * @return string
+     * @codeCoverageIgnore
      */
     public function getBody(): string
     {
@@ -78,6 +83,7 @@ class Request
 
     /**
      * @param string $body
+     * @codeCoverageIgnore
      */
     public function setBody(string $body): void
     {
@@ -86,6 +92,7 @@ class Request
 
     /**
      * @return Header[]
+     * @codeCoverageIgnore
      */
     public function getHeaders(): array
     {
@@ -94,6 +101,7 @@ class Request
 
     /**
      * @param Header[] $headers
+     * @codeCoverageIgnore
      */
     public function setHeaders(array $headers): void
     {
@@ -102,6 +110,7 @@ class Request
 
     /**
      * @return mixed
+     * @codeCoverageIgnore
      */
     public function getFiles()
     {
@@ -110,6 +119,7 @@ class Request
 
     /**
      * @param mixed $files
+     * @codeCoverageIgnore
      */
     public function setFiles($files): void
     {
@@ -117,11 +127,19 @@ class Request
     }
 
     /**
+     * Configures request object by custom params
+     *
      * @param array $files
+     * @param array $get
+     * @param array $post
+     * @param array $headers
      */
-    public function initialize(array $files = [])
+    public function initialize(array $files = [], array $get = [], array $post = [], array $headers = [])
     {
         $this->setFiles($this->buildFilesArray($files));
+        $this->setGet($get);
+        $this->setPost($post);
+        $this->setHeaders($this->buildHeadersArray($headers));
     }
 
     /**
@@ -134,7 +152,11 @@ class Request
         }
 
         $this->setHeaders($this->buildHeadersArray(headers_list()));
-        $this->setBody(file_get_contents('php://stdin'));
+
+        if(CHIVEN_ENV != 'test') {
+            $this->setBody(file_get_contents('php://stdin'));
+        }
+
         $this->setPost($_POST);
         $this->setGet($_GET);
     }
@@ -146,24 +168,31 @@ class Request
     private function buildFilesArray(array $files)
     {
         $fileObjectsArray = [];
-        $fileCount = count($files['name']);
+        $file = end($files);
 
-        $purifiedFileArray = [];
+        if(is_array($file['name'])) {
+            $fileCount = count($file);
 
-        for ($i = 0; $i < $fileCount; $i++) {
-            $tmp = [];
+            $purifiedFileArray = [];
 
-            foreach ($files as $fileProperty => $value) {
-                foreach ($value as $key => $item) {
-                    $tmp[$fileProperty] = $files[$fileProperty][$i];
+            for ($i = 0; $i < $fileCount; $i++) {
+                $tmp = [];
+
+                foreach ($files as $fileProperty => $value) {
+                    foreach ($value as $key => $item) {
+                        var_dump($item);
+                        $tmp[$fileProperty] = $files[$fileProperty][$key][$i];
+                    }
                 }
+
+                $purifiedFileArray[] = $tmp;
             }
 
-            $purifiedFileArray[] = $tmp;
-        }
-
-        foreach ($purifiedFileArray as $item) {
-            $fileObjectsArray[] =  $this->fileObjectBuilder($item);
+            foreach ($purifiedFileArray as $item) {
+                $fileObjectsArray[] = $this->fileObjectBuilder($item);
+            }
+        } else {
+            $fileObjectsArray[key($files)] = $this->fileObjectBuilder($file);
         }
 
         return $fileObjectsArray;
