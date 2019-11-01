@@ -7,6 +7,7 @@ use Throwable;
 /**
  * Class FileUploadException
  * @package Chiven\Http\Exception
+ * @codeCoverageIgnore
  */
 class FileUploadException extends \Exception
 {

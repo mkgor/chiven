@@ -7,6 +7,7 @@ use Throwable;
 /**
  * Class DirectoryNotFoundException
  * @package Chiven\Http\Exception
+ * @codeCoverageIgnore
  */
 class DirectoryNotFoundException extends \Exception
 {
