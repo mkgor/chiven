@@ -46,7 +46,11 @@ class Json implements FormatInterface
             'line' => $errline
         ]);
 
-        exit($this->responseDecorator($response));
+        if(CHIVEN_ENV == 'test') {
+            return json_decode($this->responseDecorator($response), true);
+        } else {
+            exit($this->responseDecorator($response));
+        }
     }
 
 }
