@@ -1,9 +1,7 @@
 <?php
 
 
-use Chiven\Http\Entity\File;
 use Chiven\Http\Exception\DirectoryNotFoundException;
-use Chiven\Http\Exception\FileUploadException;
 use Chiven\Http\Repository\FileRepository;
 use Chiven\Http\Request;
 use PHPUnit\Framework\TestCase;
