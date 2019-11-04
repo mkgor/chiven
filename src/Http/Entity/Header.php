@@ -6,8 +6,10 @@ namespace Chiven\Http\Entity;
  * Class Header
  * @package Chiven\Http\Entity
  */
-class Header
+class Header implements Insertable
 {
+    use InsertableTrait;
+
     /**
      * @var string
      */

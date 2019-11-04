@@ -3,14 +3,16 @@
 namespace Chiven\Http\Entity;
 
 use Chiven\Http\Exception\DirectoryNotFoundException;
-use Chiven\Http\Exception\FileUploadException;
 
 /**
  * Class File
  * @package Chiven\Http\Entity
  */
-class File
+class File implements Insertable
 {
+
+    use InsertableTrait;
+
     /**
      * Name of file
      *
@@ -45,6 +47,25 @@ class File
      * @var string
      */
     private $tmp_name;
+
+    /**
+     * File constructor.
+     *
+     * @param string $name
+     * @param string $extension
+     * @param string $mime
+     * @param int    $size
+     * @param string $tmp_name
+     */
+    public function __construct(string $name = null, string $extension = null, string $mime = null, int $size = null, string $tmp_name = null)
+    {
+        $this->name = $name;
+        $this->extension = $extension;
+        $this->mime = $mime;
+        $this->size = $size;
+        $this->tmp_name = $tmp_name;
+    }
+
 
     /**
      * @return string
