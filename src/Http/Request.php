@@ -4,20 +4,23 @@ namespace Chiven\Http;
 
 use Chiven\Http\Entity\File;
 use Chiven\Http\Entity\Header;
+use Chiven\Http\Repository\FileRepository;
+use Chiven\Http\Repository\HeaderRepository;
 
 /**
  * Class Request
+ *
  * @package Chiven\Http
  */
 class Request
 {
     /**
-     * @var Header[]
+     * @var HeaderRepository
      */
     private $headers;
 
     /**
-     * @var File[]
+     * @var FileRepository
      */
     private $files;
 
@@ -47,6 +50,7 @@ class Request
 
     /**
      * @param array $post
+     *
      * @codeCoverageIgnore
      */
     public function setPost(array $post): void
@@ -65,6 +69,7 @@ class Request
 
     /**
      * @param array $get
+     *
      * @codeCoverageIgnore
      */
     public function setGet(array $get): void
@@ -83,6 +88,7 @@ class Request
 
     /**
      * @param string $body
+     *
      * @codeCoverageIgnore
      */
     public function setBody(string $body): void
@@ -91,25 +97,26 @@ class Request
     }
 
     /**
-     * @return Header[]
+     * @return HeaderRepository
      * @codeCoverageIgnore
      */
-    public function getHeaders(): array
+    public function getHeaders(): HeaderRepository
     {
         return $this->headers;
     }
 
     /**
      * @param Header[] $headers
+     *
      * @codeCoverageIgnore
      */
     public function setHeaders(array $headers): void
     {
-        $this->headers = $headers;
+        $this->headers->set($headers);
     }
 
     /**
-     * @return mixed
+     * @return FileRepository
      * @codeCoverageIgnore
      */
     public function getFiles()
@@ -118,12 +125,22 @@ class Request
     }
 
     /**
-     * @param mixed $files
+     * @param File[] $files
+     *
      * @codeCoverageIgnore
      */
-    public function setFiles($files): void
+    public function setFiles(array $files): void
     {
-        $this->files = $files;
+        $this->files->set($files);
+    }
+
+    /**
+     * Request constructor.
+     */
+    public function __construct()
+    {
+        $this->files = new FileRepository();
+        $this->headers = new HeaderRepository();
     }
 
     /**
@@ -147,13 +164,13 @@ class Request
      */
     public function fromGlobals()
     {
-        if(!empty($_FILES)) {
+        if (!empty($_FILES)) {
             $this->setFiles($this->buildFilesArray($_FILES));
         }
 
         $this->setHeaders($this->buildHeadersArray(headers_list()));
 
-        if(CHIVEN_ENV != 'test') {
+        if (CHIVEN_ENV != 'test') {
             $this->setBody(file_get_contents('php://stdin'));
         }
 
@@ -163,36 +180,42 @@ class Request
 
     /**
      * @param array $files
+     *
      * @return File[]
      */
     private function buildFilesArray(array $files)
     {
+        $purifiedFileArray = [];
         $fileObjectsArray = [];
-        $file = end($files);
 
-        if(is_array($file['name'])) {
-            $fileCount = count($file);
+        foreach ($files as $fileArray => $item) {
+            $checkForArray = end($item);
 
-            $purifiedFileArray = [];
+            if (is_array($checkForArray)) {
+                $fileCount = count($checkForArray);
 
-            for ($i = 0; $i < $fileCount; $i++) {
+                for ($i = 0; $i < $fileCount; $i++) {
+                    $tmp = [];
+
+                    foreach ($item as $fileProperty => $value) {
+                        $tmp[$fileProperty] = $files[$fileArray][$fileProperty][$i];
+                    }
+
+                    $purifiedFileArray[] = $tmp;
+                }
+            } else {
                 $tmp = [];
 
-                foreach ($files as $fileProperty => $value) {
-                    foreach ($value as $key => $item) {
-                        var_dump($item);
-                        $tmp[$fileProperty] = $files[$fileProperty][$key][$i];
-                    }
+                foreach ($item as $property => $value) {
+                    $tmp[$property] = $value;
                 }
 
                 $purifiedFileArray[] = $tmp;
             }
+        }
 
-            foreach ($purifiedFileArray as $item) {
-                $fileObjectsArray[] = $this->fileObjectBuilder($item);
-            }
-        } else {
-            $fileObjectsArray[key($files)] = $this->fileObjectBuilder($file);
+        foreach ($purifiedFileArray as $fileItem) {
+            $fileObjectsArray[] = $this->fileObjectBuilder($fileItem);
         }
 
         return $fileObjectsArray;
@@ -200,6 +223,7 @@ class Request
 
     /**
      * @param array $fileArray
+     *
      * @return File
      */
     private function fileObjectBuilder(array $fileArray)
@@ -219,17 +243,18 @@ class Request
 
     /**
      * @param array $headers
+     *
      * @return Header[]
      */
     private function buildHeadersArray(array $headers)
     {
         $headersObjectArray = [];
 
-        foreach($headers as $header) {
+        foreach ($headers as $header) {
             $headerExploded = explode(':', $header);
             $headersObjectArray[] = $this->headerObjectBuilder([
-                'name' => $headerExploded[0],
-                'value' => trim($headerExploded[1])
+                'name'  => $headerExploded[0],
+                'value' => trim($headerExploded[1]),
             ]);
         }
 
@@ -238,6 +263,7 @@ class Request
 
     /**
      * @param array $headerArray
+     *
      * @return Header
      */
     private function headerObjectBuilder(array $headerArray)
