@@ -2,18 +2,23 @@
 
 
 use Chiven\Http\Entity\File;
+use Chiven\Http\Exception\DirectoryNotFoundException;
+use Chiven\Http\Exception\FileUploadException;
+use Chiven\Http\Repository\FileRepository;
+use Chiven\Http\Request;
+use PHPUnit\Framework\TestCase;
 
-class FileTest extends \PHPUnit\Framework\TestCase
+class FileTest extends TestCase
 {
     const TEST_FILENAME = 'test';
 
     /**
-     * @var \Chiven\Http\Request
+     * @var Request
      */
     private $requestInstance;
 
     /**
-     * @var File[]
+     * @var FileRepository
      */
     private $files;
 
@@ -31,34 +36,26 @@ class FileTest extends \PHPUnit\Framework\TestCase
             )
         );
 
-        $this->requestInstance = new \Chiven\Http\Request();
+        $this->requestInstance = new Request();
         $this->requestInstance->fromGlobals();
 
         $this->files = $this->requestInstance->getFiles();
 
     }
 
-    /**
-     * @throws \Chiven\Http\Exception\DirectoryNotFoundException
-     * @throws \Chiven\Http\Exception\FileUploadException
-     */
     public function testMoveTo()
     {
-        $this->files[self::TEST_FILENAME]->moveTo(__DIR__ . '/test-files/upload');
+        $this->files->findFirst()->moveTo(__DIR__ . '/test-files/upload');
 
         $this->assertFileExists(__DIR__ . '/test-files/upload/large.jpg');
 
         unlink(__DIR__ . '/test-files/upload/large.jpg');
     }
 
-    /**
-     * @throws \Chiven\Http\Exception\DirectoryNotFoundException
-     * @throws \Chiven\Http\Exception\FileUploadException
-     */
     public function testNotDir()
     {
-        $this->expectException(\Chiven\Http\Exception\DirectoryNotFoundException::class);
+        $this->expectException(DirectoryNotFoundException::class);
 
-        $this->files['test']->moveTo(__DIR__ . '/test-files/large.jpg');
+        $this->files->findFirst()->moveTo(__DIR__ . '/test-files/large.jpg');
     }
 }

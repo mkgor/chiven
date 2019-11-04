@@ -23,16 +23,4 @@ class JsonTest extends TestCase
         $jsonDecoded = json_decode($format->responseDecorator($response), true);
         $this->assertEquals(['test' => 1], $jsonDecoded);
     }
-
-    public function testErrorHandler()
-    {
-        $format = new Json();
-
-        $this->assertEquals([
-            'errno' => 1,
-            'error' => 'Error',
-            'file' => 'error.php',
-            'line' => 1
-        ], $format->errorHandler(1, 'Error', 'error.php', 1));
-    }
 }

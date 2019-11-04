@@ -29,11 +29,11 @@ class RequestTest extends \PHPUnit\Framework\TestCase
             ]
         );
 
-        $fileArray = $request->getFiles();
-        $file = array_pop($fileArray);
+        $filesRepo = $request->getFiles();
+        $file = $filesRepo->findFirst();
 
-        $headerArray = $request->getHeaders();
-        $header = array_pop($headerArray);
+        $headersRepo = $request->getHeaders();
+        $header = $headersRepo->findFirst();
 
         $this->assertIsObject($file);
         $this->assertIsObject($header);
@@ -47,13 +47,13 @@ class RequestTest extends \PHPUnit\Framework\TestCase
         $request = new Request();
         $request->fromGlobals();
 
-        $fileArray = $request->getFiles();
-        $file = array_pop($fileArray);
+        $filesRepo = $request->getFiles();
+        $file = $filesRepo->findFirst();
 
         $this->assertEmpty($request->getGet());
         $this->assertEmpty($request->getPost());
         $this->assertIsObject($file);
-        $this->assertEmpty($request->getHeaders());
+        $this->assertEmpty($request->getHeaders()->findAll());
     }
 
     /**
@@ -65,14 +65,14 @@ class RequestTest extends \PHPUnit\Framework\TestCase
         $request->initialize([
             'test' => [
                 'tmp_name' => ['/tmp/asd30dvso','/tmp/sdgv424df'],
-                'name' => ['large.jpg', 'small.jpg'],
+                'name' => ['large1.jpg', 'small1.jpg'],
                 'type' => ['image/jpeg','image/jpeg'],
                 'size' => [335057,33507],
                 'error' => [0,0],
             ]
         ]);
 
-        $fileArray = $request->getFiles();
-        $this->assertCount(2, $fileArray);
+        $filesRepo = $request->getFiles();
+        $this->assertCount(2, $filesRepo->findAll());
     }
 }
