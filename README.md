@@ -87,7 +87,10 @@ $request->fromGlobals();
 
 //Request handling...
 
-echo $chiven->getFormat()->responseDecorator(new \Chiven\Http\Response\Response());
+//Chiven response which returned by any script/controller/etc...
+$response = new \Chiven\Http\Response\Response();
+
+echo $chiven->getFormat()->responseDecorator($response);
 ```
 
 This is how Chiven works, you can use example above and start creating your API with Chiven.
