@@ -6,8 +6,10 @@ namespace Chiven\Http\Entity;
  * Class Header
  * @package Chiven\Http\Entity
  */
-class Header
+class Header implements Insertable
 {
+    use InsertableTrait;
+
     /**
      * @var string
      */
@@ -23,6 +25,7 @@ class Header
      *
      * @param string $name
      * @param string $value
+     * @codeCoverageIgnore
      */
     public function __construct(string $name = null, string $value = null)
     {
@@ -32,6 +35,7 @@ class Header
 
     /**
      * @return string
+     * @codeCoverageIgnore
      */
     public function getName(): string
     {
@@ -40,6 +44,7 @@ class Header
 
     /**
      * @param string $name
+     * @codeCoverageIgnore
      */
     public function setName(string $name): void
     {
@@ -48,6 +53,7 @@ class Header
 
     /**
      * @return string
+     * @codeCoverageIgnore
      */
     public function getValue(): string
     {
@@ -56,6 +62,7 @@ class Header
 
     /**
      * @param string $value
+     * @codeCoverageIgnore
      */
     public function setValue(string $value): void
     {

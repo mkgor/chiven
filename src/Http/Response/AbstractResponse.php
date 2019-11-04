@@ -22,6 +22,7 @@ abstract class AbstractResponse
 
     /**
      * @return Header[]
+     * @codeCoverageIgnore
      */
     public function getHeaders(): array
     {
@@ -30,6 +31,7 @@ abstract class AbstractResponse
 
     /**
      * @param Header[] $headers
+     * @codeCoverageIgnore
      */
     public function setHeaders(array $headers): void
     {
@@ -38,6 +40,7 @@ abstract class AbstractResponse
 
     /**
      * @param Header $header
+     * @codeCoverageIgnore
      */
     public function addHeader(Header $header): void
     {
@@ -47,6 +50,7 @@ abstract class AbstractResponse
     /**
      * @param $name
      * @return Header|null
+     * @codeCoverageIgnore
      */
     public function getHeaderByName($name): ?Header
     {
@@ -55,6 +59,7 @@ abstract class AbstractResponse
 
     /**
      * @param string $name
+     * @codeCoverageIgnore
      */
     public function removeHeader(string $name): void
     {
@@ -65,6 +70,7 @@ abstract class AbstractResponse
 
     /**
      * @return array|string
+     * @codeCoverageIgnore
      */
     public function getBody()
     {
@@ -73,6 +79,7 @@ abstract class AbstractResponse
 
     /**
      * @param array|string $body
+     * @codeCoverageIgnore
      */
     public function setBody($body): void
     {
