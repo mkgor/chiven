@@ -2,9 +2,10 @@
 
 namespace Chiven\Format;
 
+use Chiven\Bootstrap;
 use Chiven\Http\Entity\Header;
-use Chiven\Http\Response\AbstractResponse;
-use Chiven\Http\Response\Response;
+use Psr\Http\Message\ResponseInterface;
+use Zend\Diactoros\Response;
 
 /**
  * Class Json
@@ -14,43 +15,69 @@ use Chiven\Http\Response\Response;
 class Json implements FormatInterface
 {
     /**
-     * @param AbstractResponse $response
-     *
-     * @return false|mixed|string
+     * @param string|array $body
+     * @param int $code
+     * @return ResponseInterface
      */
-    public function responseDecorator(AbstractResponse $response)
+    public function build($body = null, $code = 200)
     {
-        if ($response->getHeaderByName('Content-type') == null) {
-            $response->addHeader(new Header('Content-type', 'application/json'));
+        if (Bootstrap::getHeaderRepository()->findBy('name', 'Content-type') == null) {
+            Bootstrap::getHeaderRepository()->insert(new Header('Content-type', 'application/json'));
         }
 
-        foreach ($response->getHeaders() as $header) {
+        /** @var Header $header */
+        foreach (Bootstrap::getHeaderRepository()->findAll() as $header) {
             $header->assignHeader();
         }
 
-        return is_array($response->getBody()) ? json_encode($response->getBody()) : json_encode([$response->getBody()]);
+        $response = new Response();
+
+        if (!is_array($body) && $body != null) {
+            $body = [$body];
+        }
+
+        /** Filling up PSR-7 request */
+        $response->getBody()->write(json_encode($body));
+        $response->withStatus($code);
+
+        return $response;
     }
 
     /**
-     * @param int    $errno The first parameter, errno, contains the level of the error raised, as an integer.
+     * @param int $errno The first parameter, errno, contains the level of the error raised, as an integer.
      * @param string $errstr The second parameter, errstr, contains the error message, as a string.
      * @param string $errfile The third parameter is optional, errfile, which contains the filename that the error was raised in, as a string.
-     * @param int    $errline The fourth parameter is optional, errline, which contains the line number the error was raised at, as an integer.
+     * @param int $errline The fourth parameter is optional, errline, which contains the line number the error was raised at, as an integer.
      *
      * @codeCoverageIgnore
-     * @return mixed
+     * @return bool
      */
     public function errorHandler(int $errno, string $errstr, string $errfile, int $errline)
     {
         $response = new Response();
-        $response->setBody([
-            'errno' => $errno,
-            'error' => $errstr,
-            'file'  => $errfile,
-            'line'  => $errline,
-        ]);
 
-        exit($this->responseDecorator($response));
+        switch ($errno) {
+            case E_USER_ERROR:
+                exit($this->build([
+                    'errno' => $errno,
+                    'error' => $errstr,
+                    'file' => $errfile,
+                    'line' => $errline,
+                ])->getBody());
+
+            default:
+            case E_USER_NOTICE:
+            case E_USER_WARNING:
+                echo $this->build([
+                    'errno' => $errno,
+                    'error' => $errstr,
+                    'file' => $errfile,
+                    'line' => $errline,
+                ])->getBody();
+                break;
+        }
+
+        if(CHIVEN_ENV != 'test')
+            return false;
     }
-
 }

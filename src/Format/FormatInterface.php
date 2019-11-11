@@ -2,14 +2,14 @@
 
 namespace Chiven\Format;
 
-use Chiven\Http\Response\AbstractResponse;
-
 /**
  * Interface FormatInterface
  * @package Chiven\Format
  */
 interface FormatInterface
 {
+    public function build($body);
+
     /**
      * @param int $errno The first parameter, errno, contains the level of the error raised, as an integer.
      * @param string $errstr  The second parameter, errstr, contains the error message, as a string.
@@ -18,12 +18,4 @@ interface FormatInterface
      * @return mixed
      */
     public function errorHandler(int $errno , string $errstr, string $errfile, int $errline);
-
-    /**
-     * Decorates response body
-     *
-     * @param AbstractResponse $response
-     * @return mixed
-     */
-    public function responseDecorator(AbstractResponse $response);
 }
