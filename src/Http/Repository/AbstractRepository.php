@@ -14,7 +14,25 @@ abstract class AbstractRepository implements RepositoryInterface
     /**
      * @var Insertable[]
      */
-    private $container;
+    protected $container;
+
+    /**
+     * @return Insertable[]
+     * @codeCoverageIgnore
+     */
+    public function getContainer(): array
+    {
+        return $this->container;
+    }
+
+    /**
+     * @param Insertable[] $container
+     * @codeCoverageIgnore
+     */
+    public function setContainer(array $container): void
+    {
+        $this->container = $container;
+    }
 
     /**
      * @param string $criteria Property to search
@@ -26,10 +44,12 @@ abstract class AbstractRepository implements RepositoryInterface
     {
         $result = null;
 
-        foreach($this->container as $containerItem) {
-            foreach($containerItem->getValuesToIterate() as $key => $itemValue) {
-                if($key == $criteria && $value == $itemValue) {
-                    $result = $containerItem;
+        if(!empty($this->container)) {
+            foreach ($this->container as $containerItem) {
+                foreach ($containerItem->getValuesToIterate() as $key => $itemValue) {
+                    if ($key == $criteria && $value == $itemValue) {
+                        $result = $containerItem;
+                    }
                 }
             }
         }
@@ -75,36 +95,29 @@ abstract class AbstractRepository implements RepositoryInterface
      * @param $criteria
      * @param $value
      *
+     * @param bool $removeAll
      * @return mixed
      */
     public function remove($criteria, $value, $removeAll = false)
     {
         $result = false;
 
-        foreach($this->container as $i => $containerItem) {
-            foreach($containerItem->getValuesToIterate() as $key => $itemValue) {
-                if($key == $criteria && $value == $itemValue) {
-                    unset($this->container[$i]);
-                    $result = true;
+        if(!empty($this->container)) {
+            foreach ($this->container as $i => $containerItem) {
+                foreach ($containerItem->getValuesToIterate() as $key => $itemValue) {
+                    if ($key == $criteria && $value == $itemValue) {
+                        unset($this->container[$i]);
+                        $result = true;
 
-                    if(!$removeAll) {
-                        break;
+                        if (!$removeAll) {
+                            break;
+                        }
                     }
                 }
             }
-
         }
 
         return $result;
     }
 
-    /**
-     * @param Insertable[] $objects
-     * @codeCoverageIgnore
-     * @return void
-     */
-    public function set(array $objects): void
-    {
-        $this->container = $objects;
-    }
 }
