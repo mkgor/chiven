@@ -4,8 +4,8 @@ namespace Test\Format;
 
 use Chiven\Bootstrap;
 use Chiven\Format\Json;
-use Chiven\Http\Response\Response;
 use PHPUnit\Framework\TestCase;
+use Zend\Diactoros\Request;
 
 class JsonTest extends TestCase
 {
@@ -13,14 +13,15 @@ class JsonTest extends TestCase
     {
         if(!defined('CHIVEN_ENV'))
             define('CHIVEN_ENV', 'test');
+
+        (new Bootstrap(new Request()));
     }
 
-    public function testResponseDecorator()
+    public function testBuild()
     {
         $format = new Json();
-        $response = new Response();
-        $response->setBody(['test' => 1]);
-        $jsonDecoded = json_decode($format->responseDecorator($response), true);
+
+        $jsonDecoded = json_decode((string)($format->build(['test' => 1])->getBody()), true);
         $this->assertEquals(['test' => 1], $jsonDecoded);
     }
 }
