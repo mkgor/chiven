@@ -15,22 +15,22 @@ interface RepositoryInterface
      * @param string $criteria Property to search
      * @param string $value Value of property
      *
-     * @return Insertable[]
+     * @return Insertable[]|null
      */
     public function findBy($criteria, $value);
 
     /**
-     * @return Insertable
+     * @return Insertable|null
      */
     public function findLast();
 
     /**
-     * @return Insertable
+     * @return Insertable|null
      */
     public function findFirst();
 
     /**
-     * @return Insertable[]
+     * @return Insertable[]|null
      */
     public function findAll();
 
@@ -54,5 +54,10 @@ interface RepositoryInterface
      *
      * @return void
      */
-    public function set(array $objects): void;
+    public function setContainer(array $objects): void;
+
+    /**
+     * @return Insertable[]
+     */
+    public function getContainer(): array;
 }
