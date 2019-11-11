@@ -1,5 +1,7 @@
 # Chiven
 
+Documentation below is not for PSR-7 branch!
+
 ![codecov](https://img.shields.io/badge/coverage-98%25-green)
 ![GitHub](https://img.shields.io/github/license/pixaye/chiven)
 ![GitHub repo size](https://img.shields.io/github/repo-size/pixaye/chiven)
