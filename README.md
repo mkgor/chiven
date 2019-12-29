@@ -6,6 +6,8 @@
 ![PHP from Packagist](https://img.shields.io/packagist/php-v/pixaye/chiven)
 ![Packagist](https://img.shields.io/packagist/dm/pixaye/chiven)
 
+![Logo](https://i.imgur.com/CXJyyDj.jpg)
+
 Simple library which allows you to build RESTful API fast, easy and flexible
 
 # Installation
